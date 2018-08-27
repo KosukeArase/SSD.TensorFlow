@@ -32,13 +32,13 @@ from utility import scaffolds
 
 # hardware related configuration
 tf.app.flags.DEFINE_integer(
-    'num_readers', 8,
+    'num_readers', 4,
     'The number of parallel readers that read data from the dataset.')
 tf.app.flags.DEFINE_integer(
-    'num_preprocessing_threads', 24,
+    'num_preprocessing_threads', 4,
     'The number of threads used to create the batches.')
 tf.app.flags.DEFINE_integer(
-    'num_cpu_threads', 0,
+    'num_cpu_threads', 4,
     'The number of cpu cores used to train.')
 tf.app.flags.DEFINE_float(
     'gpu_memory_fraction', 1., 'GPU memory fraction to use.')
@@ -47,7 +47,7 @@ tf.app.flags.DEFINE_string(
     'data_dir', './dataset/tfrecords',
     'The directory where the dataset input data is stored.')
 tf.app.flags.DEFINE_integer(
-    'num_classes', 21, 'Number of classes to use in the dataset.')
+    'num_classes', 3, 'Number of classes to use in the dataset.')
 tf.app.flags.DEFINE_string(
     'model_dir', './logs/',
     'The directory where the model will be stored.')
@@ -422,7 +422,7 @@ def main(_):
                                             formatter=lambda dicts: (', '.join(['%s=%.6f' % (k, v) for k, v in dicts.items()])))
 
     print('Starting a predict cycle.')
-    pred_results = ssd_detector.predict(input_fn=input_pipeline(dataset_pattern='val-*', is_training=False, batch_size=FLAGS.batch_size),
+    pred_results = ssd_detector.predict(input_fn=input_pipeline(dataset_pattern='validation-*', is_training=False, batch_size=FLAGS.batch_size),
                                     hooks=[logging_hook], checkpoint_path=get_checkpoint())#, yield_single_examples=False)
 
     det_results = list(pred_results)
@@ -436,10 +436,10 @@ def main(_):
                 shape = pred['shape']
                 scores = pred['scores_{}'.format(class_ind)]
                 bboxes = pred['bboxes_{}'.format(class_ind)]
-                bboxes[:, 0] = (bboxes[:, 0] * shape[0]).astype(np.int32, copy=False) + 1
-                bboxes[:, 1] = (bboxes[:, 1] * shape[1]).astype(np.int32, copy=False) + 1
-                bboxes[:, 2] = (bboxes[:, 2] * shape[0]).astype(np.int32, copy=False) + 1
-                bboxes[:, 3] = (bboxes[:, 3] * shape[1]).astype(np.int32, copy=False) + 1
+                # bboxes[:, 0] = (bboxes[:, 0] * shape[0]).astype(np.int32, copy=False) + 1
+                # bboxes[:, 1] = (bboxes[:, 1] * shape[1]).astype(np.int32, copy=False) + 1
+                # bboxes[:, 2] = (bboxes[:, 2] * shape[0]).astype(np.int32, copy=False) + 1
+                # bboxes[:, 3] = (bboxes[:, 3] * shape[1]).astype(np.int32, copy=False) + 1
 
                 valid_mask = np.logical_and((bboxes[:, 2] - bboxes[:, 0] > 0), (bboxes[:, 3] - bboxes[:, 1] > 0))
 
@@ -447,7 +447,8 @@ def main(_):
                     if not valid_mask[det_ind]:
                         continue
                     f.write('{:s} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.
-                                format(filename.decode('utf8')[:-4], scores[det_ind],
+                                format(filename.decode('utf8'), scores[det_ind],
+                                # format(filename.decode('utf8')[:-4], scores[det_ind],
                                        bboxes[det_ind, 1], bboxes[det_ind, 0],
                                        bboxes[det_ind, 3], bboxes[det_ind, 2]))
 

@@ -30,13 +30,13 @@ from utility import scaffolds
 
 # hardware related configuration
 tf.app.flags.DEFINE_integer(
-    'num_readers', 8,
+    'num_readers', 4,
     'The number of parallel readers that read data from the dataset.')
 tf.app.flags.DEFINE_integer(
-    'num_preprocessing_threads', 24,
+    'num_preprocessing_threads', 4,
     'The number of threads used to create the batches.')
 tf.app.flags.DEFINE_integer(
-    'num_cpu_threads', 0,
+    'num_cpu_threads', 4,
     'The number of cpu cores used to train.')
 tf.app.flags.DEFINE_float(
     'gpu_memory_fraction', 1., 'GPU memory fraction to use.')
@@ -45,7 +45,7 @@ tf.app.flags.DEFINE_string(
     'data_dir', './dataset/tfrecords',
     'The directory where the dataset input data is stored.')
 tf.app.flags.DEFINE_integer(
-    'num_classes', 21, 'Number of classes to use in the dataset.')
+    'num_classes', 3, 'Number of classes to use in the dataset.')
 tf.app.flags.DEFINE_string(
     'model_dir', './logs/',
     'The directory where the model will be stored.')
@@ -66,13 +66,13 @@ tf.app.flags.DEFINE_integer(
     'train_epochs', None,
     'The number of epochs to use for training.')
 tf.app.flags.DEFINE_integer(
-    'max_number_of_steps', 120000,
+    'max_number_of_steps', 50000,
     'The max number of steps to use for training.')
 tf.app.flags.DEFINE_integer(
     'batch_size', 32,
     'Batch size for training and evaluation.')
 tf.app.flags.DEFINE_string(
-    'data_format', 'channels_first', # 'channels_first' or 'channels_last'
+    'data_format', 'channels_last', # 'channels_first' or 'channels_last'
     'A flag to override the data format used in the model. channels_first '
     'provides a performance boost on GPU but is not always compatible '
     'with CPU. If left unspecified, the data format will be chosen '
@@ -97,10 +97,10 @@ tf.app.flags.DEFINE_float(
     'The minimal end learning rate used by a polynomial decay learning rate.')
 # for learning rate piecewise_constant decay
 tf.app.flags.DEFINE_string(
-    'decay_boundaries', '500, 80000, 100000',
+    'decay_boundaries', '1500, 30000, 40000',
     'Learning rate decay boundaries by global_step (comma-separated list).')
 tf.app.flags.DEFINE_string(
-    'lr_decay_factors', '0.1, 1, 0.1, 0.01',
+    'lr_decay_factors', '0.1, 0.5, 0.1, 0.01',
     'The values of learning_rate decay factor for each segment between boundaries (comma-separated list).')
 # checkpoint related configuration
 tf.app.flags.DEFINE_string(
@@ -119,7 +119,7 @@ tf.app.flags.DEFINE_boolean(
     'ignore_missing_vars', True,
     'When restoring a checkpoint would ignore missing variables.')
 tf.app.flags.DEFINE_boolean(
-    'multi_gpu', True,
+    'multi_gpu', False,
     'Whether there is GPU to use for training.')
 
 FLAGS = tf.app.flags.FLAGS

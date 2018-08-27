@@ -20,6 +20,12 @@ import tensorflow as tf
 
 slim = tf.contrib.slim
 
+AYA_LABELS = {
+    'none': (0, 'Background'),
+    '/m/04hgtk': (1, 'Human head'),
+    '/m/0k65p': (2, 'Human hand'),
+}
+
 VOC_LABELS = {
     'none': (0, 'Background'),
     'aeroplane': (1, 'Vehicle'),
@@ -185,7 +191,7 @@ def slim_get_batch(num_classes, batch_size, split_name, file_pattern, num_reader
     decoder = slim.tfexample_decoder.TFExampleDecoder(keys_to_features, items_to_handlers)
 
     labels_to_names = {}
-    for name, pair in VOC_LABELS.items():
+    for name, pair in AYA_LABELS.items():
         labels_to_names[pair[0]] = name
 
     dataset = slim.dataset.Dataset(
@@ -211,7 +217,7 @@ def slim_get_batch(num_classes, batch_size, split_name, file_pattern, num_reader
                                                                      'object/bbox',
                                                                      'object/difficult'])
 
-    if is_training:
+    if False: # is_training:
         # if all is difficult, then keep the first one
         isdifficult_mask =tf.cond(tf.count_nonzero(isdifficult, dtype=tf.int32) < tf.shape(isdifficult)[0],
                                 lambda : isdifficult < tf.ones_like(isdifficult),
