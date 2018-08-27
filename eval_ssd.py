@@ -446,7 +446,7 @@ def main(_):
                 for det_ind in range(valid_mask.shape[0]):
                     if not valid_mask[det_ind]:
                         continue
-                    f.write('{:s} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.
+                    f.write('{:s} {:.3f} {:.6f} {:.6f} {:.6f} {:.6f}\n'.
                                 format(filename.decode('utf8'), scores[det_ind],
                                 # format(filename.decode('utf8')[:-4], scores[det_ind],
                                        bboxes[det_ind, 1], bboxes[det_ind, 0],
